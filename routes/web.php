@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\QuestionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,3 +18,10 @@ Route::group(['middleware' => 'guest'], function () {
 });
 
 Route::get('logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+//Game
+Route::get('game', [GameController::class, 'index'])->name('game.index')->middleware('auth');
+
+//Question
+Route::get('game/questions', [QuestionController::class, 'show'])->name('question.show')->middleware('auth');
+Route::post('game/checkAnswer/{question}', [QuestionController::class, 'checkAnswer'])->name('question.checkAnswer')->middleware('auth');

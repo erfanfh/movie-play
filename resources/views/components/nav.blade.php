@@ -9,7 +9,7 @@
                     <a class="nav-link active" aria-current="page" href="{{ route('home') }}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Play a game!</a>
+                    <a class="nav-link active" href="{{ route('game.index') }}">Play a game!</a>
                 </li>
                 <li class="nav-item">
                     @auth()
