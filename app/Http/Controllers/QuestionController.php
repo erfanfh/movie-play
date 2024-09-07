@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Memory;
 use App\Models\Question;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class QuestionController extends Controller
@@ -40,15 +41,23 @@ class QuestionController extends Controller
         $memory = Memory::where('user_id', auth()->user()->id)->where('is_active' , 1)->first();
 
         if ($memory == null) {
-            $numbers = range(1, count(Question::all()));
-            shuffle($numbers);
-            $jsonNumbers = json_encode($numbers);
+            $rows = Question::select('id')->get();
+            $ids = $rows->pluck('id')->toArray();
+            shuffle($ids);
+            $jsonNumbers = json_encode($ids);
             $memory = Memory::create([
                 'user_id' => auth()->user()->id,
                 'score' => 0,
                 'current_question' => 0,
                 'is_active' => 1,
                 'order' => $jsonNumbers
+            ]);
+        }
+
+        if (!$memory->first()->updated_at->lt(Carbon::now()->addDays(7))) {
+            $memory = Memory::where('user_id', auth()->user()->id)->where('is_active' , 1)->first();
+            $memory->update([
+                'is_active' => 0,
             ]);
         }
 
@@ -92,7 +101,7 @@ class QuestionController extends Controller
     {
         $memory = Memory::where('user_id', auth()->user()->id)->where('is_active' , 1)->first();
 
-        if (ucwords($question->answer->text) == ucwords($request->answer)) {
+        if (trim(ucwords($question->answer->text)) == trim(ucwords($request->answer))) {
             $memory->update([
                 'score' => $memory->score + 1,
                 'current_question' => $memory->current_question + 1,
@@ -105,5 +114,16 @@ class QuestionController extends Controller
             ]);
             return view('game.result')->with(['message' => 'Your answer was wrong, Game Over!', 'score' => $memory->score]);
         }
+    }
+
+    public function playover()
+    {
+        $memory = Memory::where('user_id', auth()->user()->id)->where('is_active' , 1)->first();
+
+        $memory->update([
+            'is_active' => 0,
+        ]);
+
+        return redirect()->route('question.show');
     }
 }

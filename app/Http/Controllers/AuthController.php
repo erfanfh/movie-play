@@ -13,12 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(): View|Factory|Application
-    {
-        return view('auth.login');
-    }
-
-    public function loginPost(Request $request) : RedirectResponse
+    public function loginPost(Request $request): RedirectResponse
     {
         if (Auth::attempt($request->only('username', 'password'))) {
             Auth::login(Auth::user());
@@ -26,6 +21,11 @@ class AuthController extends Controller
         }
 
         return redirect()->route('login')->with('message', 'Login details are not valid');
+    }
+
+    public function login(): View|Factory|Application
+    {
+        return view('auth.login');
     }
 
     public function register(): View|Factory|Application

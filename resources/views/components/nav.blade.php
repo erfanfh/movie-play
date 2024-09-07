@@ -1,4 +1,4 @@
-<nav id="navbar" class="navbar navbar-expand-lg bg-body-transparent position-absolute top-0 w-100">
+<nav id="navbar" class="navbar navbar-expand-lg bg-body-transparent w-100">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -18,7 +18,7 @@
                                 {{ auth()->user()->username }}
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><a class="dropdown-item" href="{{ route('profile') }}">Profile</a></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">logout
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-door-open" viewBox="0 0 16 16">
                                             <path d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1"/>
