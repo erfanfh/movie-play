@@ -53,7 +53,7 @@ class AdminController extends Controller
         return view('admin.dashboard.dashboard');
     }
 
-    public function questions()
+    public function questions(): View|Factory|Application
     {
         $questions = QueryBuilder::for(Question::class)
             ->defaultSort('-created_at')
@@ -62,7 +62,7 @@ class AdminController extends Controller
         return view('admin.dashboard.questions.index', compact('questions'));
     }
 
-    public function questionsPost(StoreQuestionRequest $request)
+    public function questionsPost(StoreQuestionRequest $request): RedirectResponse
     {
         $hash = substr(sha1(uniqid(mt_rand(), true)), 0, 16);
 
@@ -85,12 +85,12 @@ class AdminController extends Controller
         }
     }
 
-    public function questionShow(Question $question)
+    public function questionShow(Question $question): View|Factory|Application
     {
         return view('admin.dashboard.questions.show', compact('question'));
     }
 
-    public function questionsUpdate(UpdateQuestionRequest $request, Question $question)
+    public function questionsUpdate(UpdateQuestionRequest $request, Question $question): RedirectResponse
     {
         if ($request->hasFile('poster')) {
             unlink(public_path('images') . '/' . $question->image);
@@ -119,14 +119,16 @@ class AdminController extends Controller
         return redirect()->route('dashboard.questions.show', $question)->with('success', 'Question Edited!');
     }
 
-    public function questionsDestroy(Question $question)
+    public function questionsDestroy(Question $question): RedirectResponse
     {
+        unlink(public_path('images') . '/' . $question->image);
+
         $question->delete();
 
         return redirect()->route('dashboard.questions');
     }
 
-    public function users()
+    public function users(): View|Factory|Application
     {
         $users = QueryBuilder::for(User::class)
             ->defaultSort('-created_at')
@@ -136,11 +138,12 @@ class AdminController extends Controller
 
     }
 
-    public function userShow(User $user) {
+    public function userShow(User $user): View|Factory|Application
+    {
         return view('admin.dashboard.users.show', compact('user'));
     }
 
-    public function userUpdate(UpdateUserRequest $request, User $user)
+    public function userUpdate(UpdateUserRequest $request, User $user): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -149,7 +152,7 @@ class AdminController extends Controller
         return redirect()->route('dashboard.users.show', $user)->with('success', 'User updated!');
     }
 
-    public function userPasswordUpdate(UpdateUserPasswordRequest $request ,User $user)
+    public function userPasswordUpdate(UpdateUserPasswordRequest $request ,User $user): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -158,7 +161,7 @@ class AdminController extends Controller
         return redirect()->route('dashboard.users.show', $user)->with('success', 'Password Changed!');
     }
 
-    public function userDestroy(User $user)
+    public function userDestroy(User $user): RedirectResponse
     {
         $user->delete();
 
