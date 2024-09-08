@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="d-flex flex-column justify-content-center px-5 gap-3">
+    <div class="d-flex flex-column justify-content-center px-3 px-md-5 gap-3">
         <div class="username-box">
             <h5 class="mb-2">Username</h5>
             <ul class="list-group mb-2">

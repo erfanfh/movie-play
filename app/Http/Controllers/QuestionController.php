@@ -101,6 +101,10 @@ class QuestionController extends Controller
     {
         $memory = Memory::where('user_id', auth()->user()->id)->where('is_active' , 1)->first();
 
+        if(!$memory) {
+            return redirect()->route('home');
+        }
+
         if (trim(ucwords($question->answer->text)) == trim(ucwords($request->answer))) {
             $memory->update([
                 'score' => $memory->score + 1,

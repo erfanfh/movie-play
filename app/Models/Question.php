@@ -10,6 +10,11 @@ class Question extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'image',
+    ];
+
     public function answer()
     {
         return $this->hasOne(Answer::class);

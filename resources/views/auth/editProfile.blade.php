@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="d-flex flex-column justify-content-center px-5 gap-3">
+    <div class="d-flex flex-column justify-content-center px-3 px-md-5 gap-3">
         <form action="{{ route('profile.update') }}" method="post">
             @csrf
             <div class="mb-3">
