@@ -1,9 +1,10 @@
-@extends('admin.dashboard.master')
+@extends('admin.layouts.master')
 
 @section('content')
     <div class="h2">Question Details</div>
     <hr>
-    <img style="border-radius: 10px; width: 200px;" src="{{ asset('images') . '/' . $question->image }}" alt="movie poster">
+    <img style="border-radius: 10px; width: 200px;" src="{{ asset('images') . '/' . $question->image }}"
+         alt="movie poster">
     <form action="{{ route('dashboard.questions.update', $question) }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -32,6 +33,8 @@
     <form action="{{ route('dashboard.questions.destroy', $question) }}" method="post">
         @csrf
         @method('DELETE')
-        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete the question?')">Delete</button>
+        <button type="submit" class="btn btn-danger"
+                onclick="return confirm('Are you sure you want to delete the question?')">Delete
+        </button>
     </form>
 @endsection

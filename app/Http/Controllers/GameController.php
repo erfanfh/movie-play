@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Memory;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\QueryBuilder;
 use Carbon\Carbon;
 
 class GameController extends Controller
 {
-    public function index()
+    public function index(): View|Factory|Application
     {
         $memories = QueryBuilder::for(Memory::class)
             ->where('user_id', Auth::id())

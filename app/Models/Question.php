@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Question extends Model
 {
@@ -15,12 +16,12 @@ class Question extends Model
         'image',
     ];
 
-    public function answer()
+    public function answer(): HasOne
     {
         return $this->hasOne(Answer::class);
     }
 
-    public function memories()
+    public function memories(): BelongsToMany
     {
         return $this->belongsToMany(Memory::class);
     }

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminQuestionController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
@@ -55,20 +57,22 @@ Route::group(['prefix' => 'admin'], function () {
             //Dashboard
             Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
+            //Profile
+            Route::get('profile', [AdminController::class, 'profile'])->name('dashboard.profile');
 
             //Questions
-            Route::get('questions', [AdminController::class, 'questions'])->name('dashboard.questions');
-            Route::post('questions', [AdminController::class, 'questionsPost'])->name('dashboard.questions.post');
-            Route::put('questions/{question}', [AdminController::class, 'questionsUpdate'])->name('dashboard.questions.update');
-            Route::delete('questions/{question}', [AdminController::class, 'questionsDestroy'])->name('dashboard.questions.destroy');
-            Route::get('questions/{question}', [AdminController::class, 'questionShow'])->name('dashboard.questions.show');
+            Route::get('questions', [AdminQuestionController::class, 'questions'])->name('dashboard.questions');
+            Route::post('questions', [AdminQuestionController::class, 'questionsPost'])->name('dashboard.questions.post');
+            Route::put('questions/{question}', [AdminQuestionController::class, 'questionsUpdate'])->name('dashboard.questions.update');
+            Route::delete('questions/{question}', [AdminQuestionController::class, 'questionsDestroy'])->name('dashboard.questions.destroy');
+            Route::get('questions/{question}', [AdminQuestionController::class, 'questionShow'])->name('dashboard.questions.show');
 
             //Users
-            Route::get('users', [AdminController::class, 'users'])->name('dashboard.users');
-            Route::put('users/{user}', [AdminController::class, 'userUpdate'])->name('dashboard.users.update');
-            Route::put('users/password/{user}', [AdminController::class, 'userPasswordUpdate'])->name('dashboard.users.password.update');
-            Route::delete('users/{user}', [AdminController::class, 'userDestroy'])->name('dashboard.users.destroy');
-            Route::get('users/{user}', [AdminController::class, 'userShow'])->name('dashboard.users.show');
+            Route::get('users', [AdminUserController::class, 'users'])->name('dashboard.users');
+            Route::put('users/{user}', [AdminUserController::class, 'userUpdate'])->name('dashboard.users.update');
+            Route::put('users/password/{user}', [AdminUserController::class, 'userPasswordUpdate'])->name('dashboard.users.password.update');
+            Route::delete('users/{user}', [AdminUserController::class, 'userDestroy'])->name('dashboard.users.destroy');
+            Route::get('users/{user}', [AdminUserController::class, 'userShow'])->name('dashboard.users.show');
         });
     });
 });

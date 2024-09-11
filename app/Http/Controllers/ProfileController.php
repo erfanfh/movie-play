@@ -6,13 +6,17 @@ use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Memory;
 use App\Models\User;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ProfileController extends Controller
 {
-    public function profile()
+    public function profile(): View|Factory|Application
     {
         $memories = QueryBuilder::for(Memory::class)
             ->where('user_id', Auth::id())
@@ -27,21 +31,21 @@ class ProfileController extends Controller
         return view('auth.profile', compact('memories', 'bestRecord'));
     }
 
-    public function editProfile()
+    public function editProfile(): View|Factory|Application
     {
         return view('auth.editProfile');
     }
 
-    public function updateProfile(UpdateProfileRequest $request)
+    public function updateProfile(UpdateProfileRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
         Auth::user()->update($validated);
 
-        return redirect()->route('profile');
+        return redirect()->back();
     }
 
-    public function updatePassword(UpdatePasswordRequest $request)
+    public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
     {
         if (!Hash::check($request->old_password, auth()->user()->getAuthPassword())) {
             return redirect()->route('profile.edit')->with('message', 'Old password is incorrect');
@@ -54,7 +58,7 @@ class ProfileController extends Controller
         return redirect()->route('logout');
     }
 
-    public function userProfile(string $username)
+    public function userProfile(string $username): Factory|Application|View|RedirectResponse
     {
         $user = QueryBuilder::for(User::class)
             ->where('username', $username)
@@ -74,6 +78,6 @@ class ProfileController extends Controller
             ->defaultSort('-score')
             ->first();
 
-        return view('user.profile', compact('user') ,compact('memories', 'bestRecord'));
+        return view('user.profile', compact('user'), compact('memories', 'bestRecord'));
     }
 }
