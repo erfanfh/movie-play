@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Memory\CreateMemory;
+use App\Actions\Memory\InactiveMemory;
+use App\Actions\Memory\UpdateMemory;
 use App\Models\Memory;
 use App\Models\Question;
 use Carbon\Carbon;
@@ -13,7 +16,7 @@ use Illuminate\View\View;
 
 class QuestionController extends Controller
 {
-    public function show() : View|Factory|Application
+    public function show(CreateMemory $createMemory, InactiveMemory $inactiveMemory) : View|Factory|Application
     {
         $memory = Memory::where('user_id', auth()->user()->id)->where('is_active' , 1)->first();
 
@@ -22,26 +25,16 @@ class QuestionController extends Controller
             $ids = $rows->pluck('id')->toArray();
             shuffle($ids);
             $jsonNumbers = json_encode($ids);
-            $memory = Memory::create([
-                'user_id' => auth()->user()->id,
-                'score' => 0,
-                'current_question' => 0,
-                'is_active' => 1,
-                'order' => $jsonNumbers
-            ]);
+            $memory = $createMemory->handle($jsonNumbers);
         }
 
         if (!$memory->first()->updated_at->lt(Carbon::now()->addDays(7))) {
             $memory = Memory::where('user_id', auth()->user()->id)->where('is_active' , 1)->first();
-            $memory->update([
-                'is_active' => 0,
-            ]);
+            $inactiveMemory->handle($memory);
         }
 
         if ($memory->current_question == count(Question::all())) {
-            $memory->update([
-                'is_active' => 0,
-            ]);
+            $inactiveMemory->handle($memory);
             return view('game.result')->with(['message' => 'Congrats, you finished the game! Wait for more levels', 'score' => $memory->score]);
         }
 
@@ -49,7 +42,7 @@ class QuestionController extends Controller
 
         return view('game.question', ['question' => $question]);
     }
-    public function checkAnswer(Request $request, Question $question): Factory|Application|View|RedirectResponse
+    public function checkAnswer(Request $request, Question $question, UpdateMemory $updateMemory, InactiveMemory $inactiveMemory): Factory|Application|View|RedirectResponse
     {
         $memory = Memory::where('user_id', auth()->user()->id)->where('is_active' , 1)->first();
 
@@ -58,27 +51,19 @@ class QuestionController extends Controller
         }
 
         if (trim(ucwords($question->answer->text)) == trim(ucwords($request->answer))) {
-            $memory->update([
-                'score' => $memory->score + 1,
-                'current_question' => $memory->current_question + 1,
-            ]);
-            $memory->questions()->save($question);
+            $updateMemory->handle($memory, $question);
             return redirect()->route('question.show');
         } else {
-            $memory->update([
-                'is_active' => 0,
-            ]);
-            return view('game.result')->with(['message' => 'Your answer was wrong, Game Over!', 'score' => $memory->score]);
+            $inactiveMemory->handle($memory);
+            return view('game.result')->with(['message' => 'Your answer was wrong, Games Over!', 'score' => $memory->score]);
         }
     }
 
-    public function playover(): RedirectResponse
+    public function playover(InactiveMemory $inactiveMemory): RedirectResponse
     {
         $memory = Memory::where('user_id', auth()->user()->id)->where('is_active' , 1)->first();
 
-        $memory->update([
-            'is_active' => 0,
-        ]);
+        $inactiveMemory->handle($memory);
 
         return redirect()->route('question.show');
     }

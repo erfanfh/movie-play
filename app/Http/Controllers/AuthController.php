@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\User\CreateUser;
 use App\Http\Requests\StoreUserRequest;
-use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -33,11 +33,11 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    public function registerPost(StoreUserRequest $request): RedirectResponse
+    public function registerPost(StoreUserRequest $request, CreateUser $createUser): RedirectResponse
     {
         $validated = $request->validated();
 
-        $user = User::create($validated);
+        $user = $createUser->handle($validated);
 
         Auth::login($user);
 

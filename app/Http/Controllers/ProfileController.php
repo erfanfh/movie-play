@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Password\UpdatePassword;
+use App\Actions\Profile\UpdateProfile;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Memory;
@@ -36,24 +38,22 @@ class ProfileController extends Controller
         return view('auth.editProfile');
     }
 
-    public function updateProfile(UpdateProfileRequest $request): RedirectResponse
+    public function updateProfile(UpdateProfileRequest $request, UpdateProfile $updateProfile): RedirectResponse
     {
         $validated = $request->validated();
 
-        Auth::user()->update($validated);
+        $updateProfile->handle($validated);
 
         return redirect()->back();
     }
 
-    public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
+    public function updatePassword(UpdatePasswordRequest $request, UpdatePassword $updatePassword): RedirectResponse
     {
         if (!Hash::check($request->old_password, auth()->user()->getAuthPassword())) {
             return redirect()->route('profile.edit')->with('message', 'Old password is incorrect');
         }
 
-        Auth::user()->update([
-            'password' => $request->password,
-        ]);
+        $updatePassword->handle($request);
 
         return redirect()->route('logout');
     }

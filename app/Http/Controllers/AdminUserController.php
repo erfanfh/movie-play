@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\User\UpdateUser;
 use App\Http\Requests\UpdateUserPasswordRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
@@ -28,20 +29,20 @@ class AdminUserController extends Controller
         return view('admin.dashboard.users.show', compact('user'));
     }
 
-    public function userUpdate(UpdateUserRequest $request, User $user): RedirectResponse
+    public function userUpdate(UpdateUserRequest $request, User $user, UpdateUser $updateUser): RedirectResponse
     {
         $validated = $request->validated();
 
-        $user->update($validated);
+        $updateUser->update($user, $validated);
 
         return redirect()->route('dashboard.users.show', $user)->with('success', 'User updated!');
     }
 
-    public function userPasswordUpdate(UpdateUserPasswordRequest $request, User $user): RedirectResponse
+    public function userPasswordUpdate(UpdateUserPasswordRequest $request, User $user, UpdateUser $updateUser): RedirectResponse
     {
         $validated = $request->validated();
 
-        $user->update($validated);
+        $updateUser->update($user, $validated);
 
         return redirect()->route('dashboard.users.show', $user)->with('success', 'Password Changed!');
     }

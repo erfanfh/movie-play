@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Admin\CreateAdmin;
 use App\Http\Requests\StoreAdminRequest;
-use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
@@ -22,7 +22,7 @@ class AdminController extends Controller
         return view('admin.auth.register');
     }
 
-    public function adminRegisterPost(StoreAdminRequest $request): RedirectResponse
+    public function adminRegisterPost(StoreAdminRequest $request, CreateAdmin $createAdmin): RedirectResponse
     {
         if ($request->key != 'e3b0c44298f') {
             return redirect()->route('admin.register')->with('message', 'The provided key was not correct!');
@@ -30,11 +30,9 @@ class AdminController extends Controller
 
         $validated = $request->validated();
 
-        $user = User::create($validated);
+        $user = $createAdmin->create($validated);
 
-        $user->is_admin = 1;
-
-        $user->save();
+        $createAdmin->admin($user);
 
         Auth::login($user);
 
