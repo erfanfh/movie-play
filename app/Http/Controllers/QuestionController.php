@@ -50,7 +50,7 @@ class QuestionController extends Controller
             return redirect()->route('home');
         }
 
-        if (trim(ucwords($question->answer->text)) == trim(ucwords($request->answer))) {
+        if (trim(strtolower($question->answer->text)) == trim(strtolower($request->answer))) {
             $updateMemory->handle($memory, $question);
             return redirect()->route('question.show');
         } else {
