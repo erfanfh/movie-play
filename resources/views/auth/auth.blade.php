@@ -1,9 +1,9 @@
 @extends('layouts.master')
 @section('content')
     <div class="container">
-        <div class="d-flex flex-column align-items-center justify-content-center p-5 mt-5">
-            <h2 class="">@yield('button')</h2>
-            <form class="w-75" action="@yield('action')" method="post">
+        <div class="d-flex flex-column align-items-center justify-content-center mt-2 p-0 p-md-5 mt-md-5">
+            <h2>@yield('button')</h2>
+            <form class="w-100 w-md-75" action="@yield('action')" method="post">
                 @yield('csrf')
                 <div class="mb-3">
                     <label class="form-label text-black">Username</label>
