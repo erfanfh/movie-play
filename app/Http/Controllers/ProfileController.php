@@ -20,17 +20,12 @@ class ProfileController extends Controller
 {
     public function profile(): View|Factory|Application
     {
-        $memories = QueryBuilder::for(Memory::class)
-            ->where('user_id', Auth::id())
-            ->defaultSort('-created_at')
-            ->paginate(10);
-
         $bestRecord = QueryBuilder::for(Memory::class)
             ->where('user_id', Auth::id())
             ->defaultSort('-score')
             ->first();
 
-        return view('auth.profile', compact('memories', 'bestRecord'));
+        return view('auth.profile', compact('bestRecord'));
     }
 
     public function editProfile(): View|Factory|Application
