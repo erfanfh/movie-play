@@ -22,4 +22,6 @@ require __DIR__ . '/Admin/Questions/question.php';
 
 require __DIR__ . '/Admin/Users/user.php';
 
+require __DIR__ . '/Leaderboard/leaderboard.php';
+
 require __DIR__ . '/Profiles/profile.php';
