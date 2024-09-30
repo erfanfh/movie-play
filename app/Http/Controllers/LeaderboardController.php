@@ -12,7 +12,7 @@ class LeaderboardController extends Controller
     {
         $records = QueryBuilder::for(Memory::class)
             ->defaultSort('-score')
-            ->paginate(50);
+            ->paginate(100);
 
         return view('leaderboard.list', ['records' => $records]);
     }
