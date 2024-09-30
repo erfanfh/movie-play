@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Answers\checkAnswer;
 use App\Actions\Memory\CreateMemory;
 use App\Actions\Memory\InactiveMemory;
 use App\Actions\Memory\UpdateMemory;
@@ -42,7 +43,7 @@ class QuestionController extends Controller
 
         return view('game.question', ['question' => $question]);
     }
-    public function checkAnswer(Request $request, Question $question, UpdateMemory $updateMemory, InactiveMemory $inactiveMemory): Factory|Application|View|RedirectResponse
+    public function checkAnswer(Request $request, Question $question, UpdateMemory $updateMemory, InactiveMemory $inactiveMemory, checkAnswer $checkAnswer): Factory|Application|View|RedirectResponse
     {
         $memory = Memory::where('user_id', auth()->user()->id)->where('is_active' , 1)->first();
 
@@ -50,7 +51,9 @@ class QuestionController extends Controller
             return redirect()->route('home');
         }
 
-        if (trim(strtolower($question->answer->text)) == trim(strtolower($request->answer))) {
+        $similarity = $checkAnswer->handle($request->answer, $question->answer->text);
+
+        if ($similarity >= 0.8) {
             $updateMemory->handle($memory, $question);
             return redirect()->route('question.show');
         } else {
